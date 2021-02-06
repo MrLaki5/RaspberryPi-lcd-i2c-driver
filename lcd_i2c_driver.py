@@ -52,6 +52,9 @@ SIZE_5x8 = 0x00
 ### Set write cursor address instruction
 DDRAM_ADDRESS_SET_MODE = 0x80
 
+### Backlight pins
+BACKLIGHT_ON = 0x08
+BACKLIGHT_OFF = 0x00
 
 REGISTER_SELECT_BYTE = 0b00000001
 READ_WRITE_BYTE = 0b00000010
@@ -93,9 +96,9 @@ class LcdDisplay:
 
     def write_lcd_four_bits(self, data):
         # Enable high
-        self.write_bus_byte(data | ENABLE_BYTE)
+        self.write_bus_byte(data | ENABLE_BYTE | BACKLIGHT_ON)
         # Enable low
-        self.write_bus_byte(data & ~ENABLE_BYTE)
+        self.write_bus_byte((data & ~ENABLE_BYTE) | BACKLIGHT_ON)
     
     def write_lcd_byte(self, data, mode=0b00000000):
         # Write upper 4 bits first
