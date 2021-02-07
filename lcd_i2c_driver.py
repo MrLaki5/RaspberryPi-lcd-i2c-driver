@@ -127,7 +127,7 @@ if __name__ == "__main__":
         try:
             in_command = int(input(": "))
             if in_command == 1:
-                data_str = int(input("Write string: "))
+                data_str = str(input("Write string: "))
                 lcd.write_lcd_string(data_str)
             elif in_command == 2:
                 lcd.clear_lcd()
