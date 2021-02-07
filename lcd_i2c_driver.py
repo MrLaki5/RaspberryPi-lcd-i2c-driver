@@ -95,6 +95,8 @@ class LcdDisplay:
         time.sleep(0.0001)
 
     def write_lcd_four_bits(self, data):
+        # Data
+        self.write_bus_byte(data | BACKLIGHT_ON)
         # Enable high
         self.write_bus_byte(data | ENABLE_BYTE | BACKLIGHT_ON)
         # Enable low
