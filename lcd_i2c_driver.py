@@ -66,6 +66,7 @@ class LcdDisplay:
     def __init__(self, address=0x27):
         self.address = address
         self.bus = smbus.SMBus(1)
+        self.backlight_mask = BACKLIGHT_ON
         # Put display into 4bit mode (according to docs)
         self.write_lcd_byte(0x03)
         time.sleep(0.0045)
@@ -93,12 +94,12 @@ class LcdDisplay:
 
     def write_lcd_four_bits(self, data):
         # Data
-        self.write_bus_byte(data | BACKLIGHT_ON)
+        self.write_bus_byte(data | self.backlight_mask)
         # Enable high
-        self.write_bus_byte(data | ENABLE_BYTE | BACKLIGHT_ON)
+        self.write_bus_byte(data | ENABLE_BYTE | self.backlight_mask)
         time.sleep(.0005)
         # Enable low
-        self.write_bus_byte((data & ~ENABLE_BYTE) | BACKLIGHT_ON)
+        self.write_bus_byte((data & ~ENABLE_BYTE) | self.backlight_mask)
         time.sleep(.0001)
     
     def write_lcd_byte(self, data, mode=0b00000000):
@@ -116,6 +117,14 @@ class LcdDisplay:
     def clear_lcd(self):
         self.write_lcd_byte(CLEAR_DISPLAY)
 
+    def set_lcd_backlight(self, turn_on=True):
+        if turn_on:
+            self.backlight_mask = BACKLIGHT_ON
+        else:
+            self.backlight_mask = BACKLIGHT_OFF
+        self.write_lcd_byte(self.backlight_mask)
+
+
 ### Main, test driver
 if __name__ == "__main__":
     lcd = LcdDisplay()
@@ -123,7 +132,9 @@ if __name__ == "__main__":
         print("Test lcd i2c driver menu:")
         print("1. Write string to display")
         print("2. Clear display")
-        print("4. Exit")
+        print("3. Turn on backlight")
+        print("4. Turn off backlight")
+        print("5. Exit")
         try:
             in_command = int(input(": "))
             if in_command == 1:
@@ -131,7 +142,11 @@ if __name__ == "__main__":
                 lcd.write_lcd_string(data_str)
             elif in_command == 2:
                 lcd.clear_lcd()
+            elif in_command == 3:
+                lcd.set_lcd_backlight(True)
             elif in_command == 4:
+                lcd.set_lcd_backlight(False)
+            elif in_command == 5:
                 break
         except Exception as ex:
             continue
