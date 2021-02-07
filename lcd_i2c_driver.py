@@ -88,6 +88,7 @@ class LcdDisplay:
         
         # Set entry mode for data that will be written fo siplay
         self.write_lcd_byte(ENTRYMODE_SET_MODE | MOVE_RIGHT_AFTER_WRITE | ENTIRE_DISPLAY_SHIFT_NOT)
+        #time.sleep(0.2)
 
     def write_bus_byte(self, data):
         self.bus.write_byte(self.address, data)
@@ -99,8 +100,10 @@ class LcdDisplay:
         self.write_bus_byte(data | BACKLIGHT_ON)
         # Enable high
         self.write_bus_byte(data | ENABLE_BYTE | BACKLIGHT_ON)
+        time.sleep(.0005)
         # Enable low
         self.write_bus_byte((data & ~ENABLE_BYTE) | BACKLIGHT_ON)
+        time.sleep(.0001)
     
     def write_lcd_byte(self, data, mode=0b00000000):
         # Write upper 4 bits first
