@@ -61,13 +61,11 @@ READ_WRITE_BYTE = 0b00000010
 ENABLE_BYTE = 0b00000100
 
 
-
 class LcdDisplay:
-
+    ### Constructor
     def __init__(self, address=0x27):
         self.address = address
         self.bus = smbus.SMBus(1)
-
         # Put display into 4bit mode (according to docs)
         self.write_lcd_byte(0x03)
         time.sleep(0.0045)
@@ -76,20 +74,18 @@ class LcdDisplay:
         self.write_lcd_byte(0x03)
         time.sleep(0.001)
         self.write_lcd_byte(0x02)
-
         # Set lines font size
         self.write_lcd_byte(FUNCTIONSET_MODE | FOUR_BIT | TWO_LINE | SIZE_5x8)
-
         # Turn display on with cursor turned off
         self.write_lcd_byte(DISPLAY_CONTROL_MODE | DISPLAY_ON | DISPLAY_CURSOR_OFF | DISPLAY_CURSOR_POS_OFF)
-
         # Clear display
         self.write_lcd_byte(CLEAR_DISPLAY)
-        
         # Set entry mode for data that will be written fo siplay
         self.write_lcd_byte(ENTRYMODE_SET_MODE | MOVE_RIGHT_AFTER_WRITE | ENTIRE_DISPLAY_SHIFT_NOT)
-        #time.sleep(0.2)
+        # Init wait time
+        time.sleep(0.1)
 
+    ### Internal write functions
     def write_bus_byte(self, data):
         self.bus.write_byte(self.address, data)
         # Data hold time
@@ -111,8 +107,31 @@ class LcdDisplay:
         # Write lower 4 bits after
         self.write_lcd_four_bits(((data << 4) & 0xF0) | mode)
 
+    ### External write functions
+    def write_lcd_string(self, string_data):
+        for character in string_data:
+            lcd.write_lcd_byte(ord(character), REGISTER_SELECT_BYTE)
 
+    ### External utility functions
+    def clear_lcd(self):
+        self.write_lcd_byte(CLEAR_DISPLAY)
 
+### Main, test driver
 if __name__ == "__main__":
     lcd = LcdDisplay()
-    lcd.write_lcd_byte(ord('a'), REGISTER_SELECT_BYTE)
+    while True:
+        print("Test lcd i2c driver menu:")
+        print("1. Write string to display")
+        print("2. Clear display")
+        print("4. Exit")
+        try:
+            in_command = int(input(": "))
+            if in_command == 1:
+                data_str = int(input("Write string: "))
+                lcd.write_lcd_string(data_str)
+            elif in_command == 2:
+                lcd.clear_lcd()
+            elif in_command == 4:
+                break
+        except Exception as ex:
+            continue
