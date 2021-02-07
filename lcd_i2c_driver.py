@@ -122,7 +122,7 @@ class LcdDisplay:
             self.backlight_mask = BACKLIGHT_ON
         else:
             self.backlight_mask = BACKLIGHT_OFF
-        self.write_lcd_byte(self.backlight_mask)
+        self.write_bus_byte(self.backlight_mask)
 
 
 ### Main, test driver
