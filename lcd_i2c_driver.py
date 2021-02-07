@@ -112,7 +112,7 @@ class LcdDisplay:
     ### External write functions
     def write_lcd_string(self, string_data, line=0):
         # Check if line number is supported
-        if len(self.row_offset) >= line:
+        if len(self.row_offset) <= line:
             print("LcdDisplay: Error: line " + str(line) + " not supported")
             return
         # Set line
