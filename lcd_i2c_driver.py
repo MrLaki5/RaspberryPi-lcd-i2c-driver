@@ -67,6 +67,7 @@ class LcdDisplay:
         self.address = address
         self.bus = smbus.SMBus(1)
         self.backlight_mask = BACKLIGHT_ON
+        self.row_offset = [0x00, 0x40, 0x10, 0x50]
         # Put display into 4bit mode (according to docs)
         self.write_lcd_byte(0x03)
         time.sleep(0.0045)
@@ -109,9 +110,16 @@ class LcdDisplay:
         self.write_lcd_four_bits(((data << 4) & 0xF0) | mode)
 
     ### External write functions
-    def write_lcd_string(self, string_data):
+    def write_lcd_string(self, string_data, line=0):
+        # Check if line number is supported
+        if len(self.row_offset) >= line:
+            print("LcdDisplay: Error: line " + str(line) + " not supported")
+            return
+        # Set line
+        self.write_lcd_byte(DDRAM_ADDRESS_SET_MODE | self.row_offset[line])
+        # Write string
         for character in string_data:
-            lcd.write_lcd_byte(ord(character), REGISTER_SELECT_BYTE)
+            self.write_lcd_byte(ord(character), REGISTER_SELECT_BYTE)
 
     ### External utility functions
     def clear_lcd(self):
@@ -139,7 +147,8 @@ if __name__ == "__main__":
             in_command = int(input(": "))
             if in_command == 1:
                 data_str = str(input("Write string: "))
-                lcd.write_lcd_string(data_str)
+                line_num = int(input("Write on line: "))
+                lcd.write_lcd_string(data_str, line_num)
             elif in_command == 2:
                 lcd.clear_lcd()
             elif in_command == 3:
