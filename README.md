@@ -40,5 +40,10 @@ python3 ./lcd_i2c_driver.py
 ```
 <hr/>
 
+### Driver interface
+Can be found on [WIKI](../../wiki/LCD-driver-interface)
+
+<hr/>
+
 ### References
 [Display worksheet](https://www.openhacks.com/uploadsproductos/eone-1602a1.pdf)
