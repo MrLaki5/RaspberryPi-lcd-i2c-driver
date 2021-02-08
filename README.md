@@ -1,5 +1,5 @@
 ## RaspberryPi lcd i2c display driver
-Adding an lcd display to your Raspberry Pi can increase mobility of your projects and give you whole new dimension of interfacing possibilities. This project with setup steps below will help you connecting and running your i2c lcd display on Raspberry Pi.
+Adding an lcd display to your Raspberry Pi can increase mobility of your projects and give you whole new dimension of interfacing possibilities. This project with setup steps below will help you to easily connect and run your i2c lcd display on Raspberry Pi.
 
 <img src="img/Hello_earth.jpeg" width="500"/>
 <hr/>
